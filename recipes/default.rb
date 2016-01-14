@@ -17,6 +17,23 @@
 # limitations under the License.
 #
 
+case node["platform_family"]
+when "suse"
+  include_recipe "zypper"
+
+  zypper_repository node["tilda"]["zypper"]["alias"] do
+    uri node["tilda"]["zypper"]["repo"]
+    key node["tilda"]["zypper"]["key"]
+    title node["tilda"]["zypper"]["title"]
+
+    action [:add, :refresh]
+
+    only_if do
+      node["tilda"]["zypper"]["enabled"]
+    end
+  end
+end
+
 node["tilda"]["packages"].each do |name|
   package name do
     action :install
